@@ -58,29 +58,3 @@ nix flake update                                      # refresh flake.lock (comm
 
 Building Linux packages on macOS needs a Linux builder (a remote builder, or
 `nix` inside Docker / a NixOS VM). The smoke test builds natively anywhere.
-
-## How the agent images consume this
-
-`nixpkgs`'s `inputs.nixpkgs.url` is pinned to the **same** release the images use
-(`images-b2/skills.yml` `nix.channel` → `nixos-26.05`); keep them in sync so
-`glibc`/`stdenv`/`autoPatchelfHook` match the agent runtime.
-
-The images repo bakes a manifest of `{flakeURL, rev, packages}` and the launcher
-installs each package with a fully-pinned flakeref
-(`github:neria-cloud/nixpkgs/<rev>#<pkg>`), reproducible across all agents. Wiring
-the images `skills.yml` schema + resolver + installer to reference this flake (in
-addition to nixpkgs) is the open work tracked in
-`images-b2` (the `custom/third-party nix repositories per skill` TODO).
-
-## Notes
-
-- **Private repo / auth.** If this repo is private, the agent's Nix needs a
-  credential at install time — a GitHub token in `/etc/nix/nix.conf`
-  (`access-tokens = github.com=…`), a git `netrc`, or an SSH key — provisioned
-  alongside the other agent secrets, not baked into the image.
-- **Binary cache.** Custom packages are not on `cache.nixos.org`, so Nix *builds*
-  the wrapper derivation on first install (download + patchelf — seconds). To
-  skip even that across agents, run your own binary cache and add it as a
-  substituter.
-- **Reproducibility.** Asset hashes + the pinned nixpkgs rev (`flake.lock`) make
-  every build content-addressed; commit `flake.lock`.

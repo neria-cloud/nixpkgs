@@ -17,6 +17,7 @@ flake.lock                    pins nixpkgs to an exact commit  (run `nix flake u
 pkgs/
   default.nix                 the package set: { pkgs }: { <name> = …; }  — add packages here
   gogcli/default.nix          example: wrap a GitHub-release binary as a Nix package
+  ocis-mcp-server/default.nix MCP server for ownCloud Infinite Scale (same wrapper pattern)
 ```
 
 `pkgs/default.nix` is a plain `{ pkgs }:` function returning an attrset of

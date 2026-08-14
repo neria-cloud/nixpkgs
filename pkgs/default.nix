@@ -24,4 +24,8 @@ in
   # This is the reference pattern for wrapping a precompiled GitHub-release
   # binary; copy pkgs/gogcli/ as a starting point for new wrappers.
   gogcli = pkgs.callPackage ./gogcli { };
+
+  # ocis-mcp-server — MCP server fronting ownCloud Infinite Scale (oCIS).
+  # Statically-linked Go release binary, same wrapper pattern as gogcli.
+  ocis-mcp-server = pkgs.callPackage ./ocis-mcp-server { };
 }
